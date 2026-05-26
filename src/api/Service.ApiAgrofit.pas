@@ -25,7 +25,7 @@ implementation
 
 const
   BASE_URL   = 'https://api.cnptia.embrapa.br/agrofit/v1';
-  TOKEN_AUTH = 'e9880762-331a-3d91-9490-a1f6ab7c2da5';
+  TOKEN_AUTH = '###SEU_TOKEN_AQUI###';
 
 constructor TApiAgrofitService.Create;
 begin
