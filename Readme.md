@@ -1,54 +1,137 @@
-#Como executar o projeto
-  -Basta executar o arquivo .exe que está na raiz do projeto (Agrofit\AgrofitDelphi.exe).
-  -Não é necessário instalar banco de dados ou qualquer dependência externa, pois o projeto já acompanha todas as DLLs necessárias para execução.
-  -Para buildar o .dproj, basta abrir o projeto na IDE, seguir até mo menu Project -> Options -> Delphi Compiler -> Output Compiler e alterar 
-     o caminho para a mesma raiz do .dproj, dessa forma garante que ele encontrará todos os arquivos necessários.
+# Agrofit Delphi
 
-#Estrutura
-  -Separado em camadas, garantindo escalabilidade e facilidade para encontrar arquivos
+## Como executar o projeto
 
+- Basta executar o arquivo `.exe` que está na raiz do projeto:
+
+```txt
+Agrofit\AgrofitDelphi.exe
+```
+
+- Não é necessário instalar banco de dados ou qualquer dependência externa, pois o projeto já acompanha todas as DLLs de permissão para execução.
+
+- Para construir o `.dproj`, basta abrir o projeto na IDE, seguir até o menu:
+
+```txt
+Projeto -> Opções -> Compilador Delphi -> Compilador de Saída
+```
+
+e alterar o caminho para a mesma raiz do `.dproj`, dessa forma garante que ele encontrará todos os arquivos necessários.
+
+---
+
+## Estrutura
+
+Separado em camadas, garantindo escalabilidade e facilidade para encontrar arquivos.
+
+```txt
 Agrofit/
-|-- AgrofitDelphi.dpr
-|-- AgrofitDelphi.dproj
-|-- AgrofitDelphi.exe #executável já buildado
-|-- fbembed.dll #e demais outros arquivos de configuração do Firebird 2.5 Embedded
-|
-|-- database/
-|   |-- AGROFIT.FDB 
-|   |-- Database.Initializer.pas #inicializador do BD, cria o fdb e executa o database.sql
-|   |-- database.sql #scripts de criação de tabela, pk, trigger, etc...
-|
-|-- src/
-|   |── api/ #Consumo HTTP
-|   |   |--RestClient.pas # client HTTP Genérico
-|   |   |-- Service.ApiAgrofit.pas # serviço especifico para a API, conhece os endpoints e trata para exatamente o retorno esperado pela Ui
-|   |
-|   |-- dm/
-|   |   |── DM.Database.pas #DataModulo, conecta o FireDAC com o Firebird
-|   |   |── DM.Database.dfm
-|   |
-|   |-- model/
-|   |   |── Model.ProdutoTecnico.pas #model com a classe conforme retornado pela API
-|   |
-|   |-- repository/
-|   |   |── Repository.ProdutoTecnico.pas #repository, responsável por comunicar diretamente com o BD, executando insert, update e consultas
-|   |
-|   |-- ui/
-|       |── frmMain.pas # formulario principal, exibe todas as operações possiveis
-|       |── frmMain.dfm
-|--
+│
+├── AgrofitDelphi.dpr
+├── AgrofitDelphi.dproj
+├── AgrofitDelphi.exe
+│   # executável já buildado
+│
+├── fbembed.dll
+│   # e demais outros arquivos de configuração do Firebird 2.5 Embedded
+│
+├── banco de dados/
+│   ├── AGROFIT.FDB
+│   ├── Database.Initializer.pas
+│   │   # inicializador do BD, cria o fdb e executa o database.sql
+│   │
+│   └── database.sql
+│       # scripts de criação de tabela, pk, trigger, etc...
+│
+└── src/
+    │
+    ├── api/
+    │   ├── RestClient.pas
+    │   │   # cliente HTTP Genérico
+    │   │
+    │   └── Service.ApiAgrofit.pas
+    │       # serviço específico para API,
+    │       # conhece os endpoints e trata exatamente
+    │       # para o retorno esperado pela UI
+    │
+    ├── dm/
+    │   ├── DM.Database.pas
+    │   │   # DataModulo, conecta o FireDAC com o Firebird
+    │   │
+    │   └── DM.Database.dfm
+    │
+    ├── modelo/
+    │   └── Model.ProdutoTecnico.pas
+    │       # model com a classe conforme retornado pela API
+    │
+    ├── repositorio/
+    │   └── Repositorio.ProdutoTecnico.pas
+    │       # repositório, responsável por comunicar
+    │       # diretamente com o BD, executando
+    │       # insert, update e consultas
+    │
+    └── ui/
+        ├── frmMain.pas
+        │   # formulário principal,
+        │   # exibe todas as operações possíveis
+        │
+        └── frmPrincipal.dfm
+```
 
-#Princípio SOLID aplicado
-  -SRP – Single Responsibility Principle
-    -Cada classe possui uma unica responsabilidade bem definida ex:
-      -TAPIAgrofitService - consume apenas a api agrofit, TRestClient - apenas executa métodos get
-      -RestClient não conhece api, api não conhece interface, nem banco local, cada classe conhece apenas seus métodos responsáveis por sua operação
+---
 
-#Operações realizadas
-  -Consulta API - consulta produto na API, trata o retorno e exibe na tela se encontrar produto;
-  -Consulta Local - consulta pelo produto no bd local;
-  -Salva Local - salva o produto no banco de dados local
-    -caso já esteja salvo localmente, pergunta se deseja atualizar o registro salvo com os novos dados
+## Princípio SOLID aplicado
 
-A ideia foi deixar funcional como se fosse uma conferencia para importação de produtos de um sistema para outro, consome produto da API, 
-  valida os dados em tela, se OK, salva, se não, altera o que for necessário e pode salvar com as informaçoes corretas.
+### SRP – Princípio de Responsabilidade Única
+
+Cada classe possui uma responsabilidade única bem definida.
+
+Exemplos:
+
+- `TAPIAgrofitService`
+  - consome apenas a API Agrofit
+
+- `TRestClient`
+  - apenas executa métodos GET
+
+- `RestClient`
+  - não conhece API
+
+- `API`
+  - não conhece interface nem banco local
+
+Cada classe conhece apenas seus métodos responsáveis por sua operação.
+
+---
+
+## Operações realizadas
+
+### Consulta API
+
+- consulta produto na API
+- trata o retorno
+- exibe na tela caso encontre o produto
+
+### Consulta Local
+
+- consulta o produto no banco de dados local
+
+### Salva Local
+
+- salva o produto no banco de dados local
+- caso já esteja salvo:
+  - pergunta se deseja atualizar o registro com os novos dados
+
+---
+
+## Objetivo
+
+A ideia foi deixar funcional como se fosse uma conferência para importação de produtos de um sistema para outro.
+
+Fluxo:
+
+1. Consome o produto da API;
+2. Valida os dados na tela;
+3. Caso esteja tudo OK, salva;
+4. Caso necessário, altera os dados;
+5. Salva com as informações corretas.
